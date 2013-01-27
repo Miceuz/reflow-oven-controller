@@ -1,21 +1,24 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdio.h>
-
+#include "LiquidCrystal.h"
 
 static int uart_putchar(char c, FILE *stream);
+static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
+static int lcd_putchar(char c, FILE *stream);
+static FILE lcd = FDEV_SETUP_STREAM(lcd_putchar, NULL, _FDEV_SETUP_WRITE);
 
-static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL,
-                                         _FDEV_SETUP_WRITE);
-
-static int
-uart_putchar(char c, FILE *stream)
-{
-  
-  if (c == '\n')
+static int uart_putchar(char c, FILE *stream) {
+  if (c == '\n') {
     uart_putchar('\r', stream);
+  }
   loop_until_bit_is_set(UCSRA, UDRE);
   UDR = c;
+  return 0;
+}
+
+static int lcd_putchar(char c, FILE *stream) {
+  LCDwrite(c);
   return 0;
 }
 
@@ -39,12 +42,20 @@ int main (void) {
   DDRC |= _BV(PC3);
   uart_init();
   stdout = &mystdout;
+
+  LiquidCrystal();
+  LCDbegin(8, 2);
   
+//  fputs("GRIBAS", &lcd);
+  fprintf(&lcd, "GRIB");
+  uint16_t c = 0;
   while(1) {
     PORTC |= _BV(PC3);
     _delay_ms(500);
     PORTC &= ~_BV(PC3);
     _delay_ms(500);
     puts("Hello, world!\n");
+    LCDsetCursor(0,1);
+    fprintf(&lcd, "%d", c++);
   }
 }

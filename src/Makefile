@@ -17,7 +17,7 @@ CFLAGS  = -I. -DDEBUG_LEVEL=0 -Os
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections,--relax
 
-OBJECTS = main.o
+OBJECTS = main.o LiquidCrystal.o spi.o
 
 COMPILE = avr-gcc -DF_CPU=$(F_CPU) $(CFLAGS) $(LDFLAGS) -mmcu=$(DEVICE)  
 
