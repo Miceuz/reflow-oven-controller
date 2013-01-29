@@ -1,0 +1,30 @@
+Partlist
+
+Exported from pt100-daughterboard.brd at 2013/01/23/ 4:52 PM
+
+EAGLE Version 5.11.0 Copyright (c) 1988-2010 CadSoft
+
+Part         Value          Package       Library       Position (mm)         Orientation
+
+C1           390nF          C0603         adafruit      (14.605 26.9875)      R90
+C2           68nf           C0603         adafruit      (9.525 27.6225)       R180
+C3           180nF          C0603         adafruit      (12.3825 26.9875)     R90
+C4           10uF           C0805         adafruit      (24.13 6.35)          R270
+C5           100nF          C0603         adafruit      (6.35 14.2875)        R270
+IC1          LM324D         SO14          linear        (12.7 16.8275)        R0
+IC2          REF31XX        DBZ_R-PDSO-G3 mic-misc      (15.24 6.6675)        R180
+JP1                         1X03_LONGPADS SparkFun      (3.81 4.1275)         MR180
+R1           25K            0603          microbuilder  (8.89 9.8425)         R180
+R2           25K            0603          microbuilder  (8.89 11.7475)        R0
+R3           25K            0603          microbuilder  (12.7 11.7475)        R180
+R4           25K            0603          microbuilder  (12.7 9.8425)         R0
+R5           2.5K           0603          microbuilder  (8.89 7.9375)         R180
+R6           100K           0603          microbuilder  (18.7325 16.8275)     R270
+R7           100K           0603          microbuilder  (16.8275 21.9075)     R180
+R9           49.9K          0603          microbuilder  (5.08 17.4625)        R180
+R10          17.4K          0603          microbuilder  (16.8275 23.8125)     R0
+R11          107K           0603          microbuilder  (13.335 24.4475)      R0
+R12          1K             0603          microbuilder  (9.525 25.7175)       R0
+R13          3.09K          0603          microbuilder  (9.525 23.8125)       R180
+R14          20K            0603          microbuilder  (9.525 21.9075)       R0
+SENSOR_BOARD                04P           con-amp-quick (24.13 16.8275)       MR270
