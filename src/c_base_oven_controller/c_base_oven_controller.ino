@@ -9,9 +9,32 @@
 #define RELEASED 3
 #define MAYBE_RELEASED 4
 
+typedef struct {
+  byte temperature;
+  byte holdSeconds;
+} tProgramPoint;
+
 const int tempInput = A0;
 boolean heaterOn = false;
 boolean running = false;
+
+unsigned long lastPrint = 0;
+unsigned long lastDebounce = 0;
+byte buttonState = RELEASED;
+byte lastButtonState = RELEASED;
+//byte setTemperature = 235;
+unsigned int tempMaxHold = 30000;
+byte tempReached = false;
+unsigned long tempReachedTimestamp = 0;
+
+tProgramPoint program[]={
+  {150, 180},
+  {205, 15},
+  {0, 0}
+};
+
+byte programStep = 0;
+
 
 void blinkHello() {
   byte i;
@@ -31,23 +54,11 @@ void setup() {
   cmdInit(9600);
   
   cmdAdd("stop", stopit);
-  cmdAdd("heaterOn", turnHeaterOn);
-  cmdAdd("heaterOff", turnHeaterOff);
   cmdAdd("run", run);
   cmdAdd("setTemp", setTemp);
   blinkHello();
   Serial.println("Hello");
 }
-
-
-unsigned long lastPrint = 0;
-unsigned long lastDebounce = 0;
-byte buttonState = RELEASED;
-byte lastButtonState = RELEASED;
-byte setTemperature = 235;
-unsigned int tempMaxHold = 15000;
-byte tempReached = false;
-unsigned long tempReachedTimestamp = 0;
 
 void loop() {
   cmdPoll();
@@ -72,7 +83,7 @@ void loop() {
 
   if(running) {
     digitalWrite(RUN_LED, HIGH);
-    if(temperature < setTemperature) {
+    if(temperature < program[programStep].temperature) {
       heaterOn = true;
     } else {
       heaterOn = false;
@@ -82,9 +93,16 @@ void loop() {
       }
     }
     if(tempReached) {
-      if((millis() - tempReachedTimestamp) > tempMaxHold) {
-        Serial.println("Stopping");
-        stopit(0, 0);
+      if((millis() - tempReachedTimestamp)/1000 > program[programStep].holdSeconds) {
+        programStep ++;
+        Serial.print("next temp:");
+        Serial.println(program[programStep].temperature);
+        if(0 == program[programStep].temperature) {
+          Serial.println("Stopping");
+          stopit(0, 0);
+        } else {
+          tempReached = false;
+        }
       }
     }
   } else {
@@ -98,6 +116,7 @@ void loop() {
 }
 
 void run(int argc, char** argv) {
+  programStep = 0;
   heaterOn = true;
   running = true;
   tempReached = false;  
@@ -108,19 +127,11 @@ void stopit(int argc, char** argv) {
   running = false;
 }
 
-void turnHeaterOn(int argc, char** argv) {
-  heaterOn = true;
-}
-
-void turnHeaterOff(int argc, char** argv) {
-  heaterOn = false;
-}
-
 void setTemp(int argc, char** argv) {
   if(2 == argc) {
-    setTemperature = atol(argv[1]);
+    program[programStep].temperature = atol(argv[1]);
     Serial.print("Setting to ");
-    Serial.println(setTemperature);
+    Serial.println(program[programStep].temperature);
   } else {
     Serial.println("Usage: setTemp <temperature>");
   }
